@@ -77,6 +77,8 @@ pip install numpy pandas
 
 ### 2. Script execution
 
+Navigate to the open_file_folder: `src` folder and then run the following command:
+
 ```bash
 py RAS.py
 ```
