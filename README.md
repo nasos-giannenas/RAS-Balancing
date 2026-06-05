@@ -73,10 +73,10 @@ Install dependencies (if needed):
 
 ```bash
 pip install numpy pandas
-``
+```
 
 ### 2. Script execution
 
 ```bash
 py RAS.py
-``
+```
