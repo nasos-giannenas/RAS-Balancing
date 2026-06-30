@@ -66,125 +66,125 @@ The method is:
 
 Let:
 
-\[
+$$
 A = [a_{ij}]
-\]
+$$
 
 be the original input–output matrix,
 
-\[
+$$
 r^* = (r_1^*, r_2^*, \ldots, r_m^*)
-\]
+$$
 
 the target row totals, and
 
-\[
+$$
 c^* = (c_1^*, c_2^*, \ldots, c_n^*)
-\]
+$$
 
 the target column totals.
 
 The objective is to find a balanced matrix
 
-\[
+$$
 X = [x_{ij}]
-\]
+$$
 
 such that
 
-\[
+$$
 \sum_j x_{ij} = r_i^*
-\]
+$$
 
 and
 
-\[
+$$
 \sum_i x_{ij} = c_j^*.
-\]
+$$
 
 ### Row Scaling (R-step)
 
-At iteration \(k\), the row adjustment factors are
+At iteration $k$, the row adjustment factors are
 
-\[
+$$
 R_i^{(k)}
 =
 \frac{r_i^*}
 {\sum_j x_{ij}^{(k-1)}}.
-\]
+$$
 
 Each row is scaled by its corresponding factor:
 
-\[
+$$
 x_{ij}^{(k+\frac{1}{2})}
 =
 R_i^{(k)} x_{ij}^{(k-1)}.
-\]
+$$
 
 ### Column Scaling (S-step)
 
 After the row adjustment, column factors are computed as
 
-\[
+$$
 S_j^{(k)}
 =
 \frac{c_j^*}
 {\sum_i x_{ij}^{(k+\frac{1}{2})}}.
-\]
+$$
 
 Each column is then scaled:
 
-\[
+$$
 x_{ij}^{(k)}
 =
 x_{ij}^{(k+\frac{1}{2})}
 S_j^{(k)}.
-\]
+$$
 
 ### Final Solution
 
-After convergence, the balanced matrix can be expressed as
+After convergence, the balanced matrix can be written as
 
-\[
-X = R A S,
-\]
+$$
+X = RAS,
+$$
 
-where
+where:
 
-- \(R\) is a diagonal matrix containing the final row scaling factors,
-- \(S\) is a diagonal matrix containing the final column scaling factors.
+- $R$ is a diagonal matrix containing the final row scaling factors.
+- $S$ is a diagonal matrix containing the final column scaling factors.
 
-Each cell therefore satisfies
+Each cell satisfies
 
-\[
+$$
 x_{ij}
 =
 r_i \, a_{ij} \, s_j.
-\]
+$$
 
 ### Convergence Criterion
 
 Iterations continue until the row and column totals are sufficiently close to their targets:
 
-\[
+$$
 \max_i
 \left|
 \sum_j x_{ij} - r_i^*
 \right|
 < \varepsilon
-\]
+$$
 
 and
 
-\[
+$$
 \max_j
 \left|
 \sum_i x_{ij} - c_j^*
 \right|
 < \varepsilon.
-\]
+$$
 
-In practice, the algorithm usually converges very quickly for non-negative matrices while preserving the original pattern of inter-sector relationships.
+In other words, the algorithm alternates between row scaling and column scaling until all margins match the specified targets within a predefined tolerance.
 
 
 
