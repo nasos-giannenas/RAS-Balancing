@@ -64,22 +64,22 @@ The method is:
 
 ## Mathematical Formulation
 
-Let:
+Let
 
 $$
-A = [a_{ij}]
+A=[a_{ij}]
 $$
 
-be the original input–output matrix,
+be the original input-output matrix,
 
 $$
-r^* = (r_1^*, r_2^*, \ldots, r_m^*)
+r^{*} = (r_1^{*}, r_2^{*}, \ldots, r_m^{*})
 $$
 
 the target row totals, and
 
 $$
-c^* = (c_1^*, c_2^*, \ldots, c_n^*)
+c^{*} = (c_1^{*}, c_2^{*}, \ldots, c_n^{*})
 $$
 
 the target column totals.
@@ -87,19 +87,19 @@ the target column totals.
 The objective is to find a balanced matrix
 
 $$
-X = [x_{ij}]
+X=[x_{ij}]
 $$
 
 such that
 
 $$
-\sum_j x_{ij} = r_i^*
+\sum_j x_{ij}=r_i^{*}
 $$
 
 and
 
 $$
-\sum_i x_{ij} = c_j^*.
+\sum_i x_{ij}=c_j^{*}.
 $$
 
 ### Row Scaling (R-step)
@@ -109,36 +109,37 @@ At iteration $k$, the row adjustment factors are
 $$
 R_i^{(k)}
 =
-\frac{r_i^*}
-{\sum_j x_{ij}^{(k-1)}}.
+\frac{r_i^{*}}
+{\sum_j x_{ij}^{(k-1)}}
 $$
 
-Each row is scaled by its corresponding factor:
+Each row is scaled according to
 
 $$
-x_{ij}^{(k+\frac{1}{2})}
+x_{ij}^{(k+\frac12)}
 =
-R_i^{(k)} x_{ij}^{(k-1)}.
+R_i^{(k)}
+x_{ij}^{(k-1)}
 $$
 
 ### Column Scaling (S-step)
 
-After the row adjustment, column factors are computed as
+After row adjustment, column scaling factors are
 
 $$
 S_j^{(k)}
 =
-\frac{c_j^*}
-{\sum_i x_{ij}^{(k+\frac{1}{2})}}.
+\frac{c_j^{*}}
+{\sum_i x_{ij}^{(k+\frac12)}}
 $$
 
-Each column is then scaled:
+Each column is then scaled as
 
 $$
 x_{ij}^{(k)}
 =
-x_{ij}^{(k+\frac{1}{2})}
-S_j^{(k)}.
+x_{ij}^{(k+\frac12)}
+S_j^{(k)}
 $$
 
 ### Final Solution
@@ -146,32 +147,33 @@ $$
 After convergence, the balanced matrix can be written as
 
 $$
-X = RAS,
+X = RAS
 $$
 
 where:
 
-- $R$ is a diagonal matrix containing the final row scaling factors.
-- $S$ is a diagonal matrix containing the final column scaling factors.
+- $R$ is the diagonal matrix of row scaling factors.
+- $S$ is the diagonal matrix of column scaling factors.
 
-Each cell satisfies
+Each element of the balanced matrix satisfies
 
 $$
 x_{ij}
 =
-r_i \, a_{ij} \, s_j.
+r_i\,a_{ij}\,s_j
 $$
 
 ### Convergence Criterion
 
-Iterations continue until the row and column totals are sufficiently close to their targets:
+The iterations continue until
 
 $$
 \max_i
 \left|
-\sum_j x_{ij} - r_i^*
+\sum_j x_{ij}-r_i^{*}
 \right|
-< \varepsilon
+<
+\varepsilon
 $$
 
 and
@@ -179,9 +181,10 @@ and
 $$
 \max_j
 \left|
-\sum_i x_{ij} - c_j^*
+\sum_i x_{ij}-c_j^{*}
 \right|
-< \varepsilon.
+<
+\varepsilon.
 $$
 
 In other words, the algorithm alternates between row scaling and column scaling until all margins match the specified targets within a predefined tolerance.
