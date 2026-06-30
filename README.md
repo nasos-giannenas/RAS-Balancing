@@ -77,7 +77,7 @@ sum_j X(i,j) = r*(i)
 sum_i X(i,j) = c*(j)
 ```
 
-### Row Scaling (R-step)
+### Row Scaling
 
 For each row `i`:
 
@@ -104,6 +104,16 @@ Update the column:
 ```
 X(i,j) = X(i,j) * S(j)
 ```
+### Convergence
+
+Iterate until convergence is reached:
+
+```
+max |CurrentRowTotal - TargetRowTotal| < ε,
+max |CurrentColumnTotal - TargetColumnTotal| < ε
+```
+where `ε` is a user-defined residual.
+
 
 ### Final Solution
 
@@ -124,19 +134,7 @@ Each cell satisfies:
 X(i,j) = R(i) * A(i,j) * S(j)
 ```
 
-### Convergence
 
-Iterate until:
-
-```
-max |CurrentRowTotal - TargetRowTotal| < ε
-```
-
-and
-
-```
-max |CurrentColumnTotal - TargetColumnTotal| < ε
-```
 
 
 
