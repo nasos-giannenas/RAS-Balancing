@@ -64,130 +64,79 @@ The method is:
 
 ## Mathematical Formulation
 
-Let
+Let:
 
-$$
-A=[a_{ij}]
-$$
+- `A = [a(i,j)]` be the original matrix
+- `r*` be the target row totals
+- `c*` be the target column totals
 
-be the original input-output matrix,
+The goal is to find a balanced matrix `X` such that:
 
-$$
-r^{*} = (r_1^{*}, r_2^{*}, \ldots, r_m^{*})
-$$
-
-the target row totals, and
-
-$$
-c^{*} = (c_1^{*}, c_2^{*}, \ldots, c_n^{*})
-$$
-
-the target column totals.
-
-The objective is to find a balanced matrix
-
-$$
-X=[x_{ij}]
-$$
-
-such that
-
-$$
-\sum_j x_{ij}=r_i^{*}
-$$
-
-and
-
-$$
-\sum_i x_{ij}=c_j^{*}.
-$$
+```
+sum_j X(i,j) = r*(i)
+sum_i X(i,j) = c*(j)
+```
 
 ### Row Scaling (R-step)
 
-At iteration $k$, the row adjustment factors are
+For each row `i`:
 
-$$
-R_i^{(k)}
-=
-\frac{r_i^{*}}
-{\sum_j x_{ij}^{(k-1)}}
-$$
+```
+R(i) = r*(i) / sum_j X(i,j)
+```
 
-Each row is scaled according to
+Update the row:
 
-$$
-x_{ij}^{(k+\frac12)}
-=
-R_i^{(k)}
-x_{ij}^{(k-1)}
-$$
+```
+X(i,j) = R(i) * X(i,j)
+```
 
 ### Column Scaling (S-step)
 
-After row adjustment, column scaling factors are
+For each column `j`:
 
-$$
-S_j^{(k)}
-=
-\frac{c_j^{*}}
-{\sum_i x_{ij}^{(k+\frac12)}}
-$$
+```
+S(j) = c*(j) / sum_i X(i,j)
+```
 
-Each column is then scaled as
+Update the column:
 
-$$
-x_{ij}^{(k)}
-=
-x_{ij}^{(k+\frac12)}
-S_j^{(k)}
-$$
+```
+X(i,j) = X(i,j) * S(j)
+```
 
 ### Final Solution
 
-After convergence, the balanced matrix can be written as
+After convergence:
 
-$$
-X = RAS
-$$
+```
+X = R * A * S
+```
 
 where:
 
-- $R$ is the diagonal matrix of row scaling factors.
-- $S$ is the diagonal matrix of column scaling factors.
+- `R` is a diagonal matrix of row multipliers
+- `S` is a diagonal matrix of column multipliers
 
-Each element of the balanced matrix satisfies
+Each cell satisfies:
 
-$$
-x_{ij}
-=
-r_i\,a_{ij}\,s_j
-$$
+```
+X(i,j) = R(i) * A(i,j) * S(j)
+```
 
-### Convergence Criterion
+### Convergence
 
-The iterations continue until
+Iterate until:
 
-$$
-\max_i
-\left|
-\sum_j x_{ij}-r_i^{*}
-\right|
-<
-\varepsilon
-$$
+```
+max |CurrentRowTotal - TargetRowTotal| < ε
+```
 
 and
 
-$$
-\max_j
-\left|
-\sum_i x_{ij}-c_j^{*}
-\right|
-<
-\varepsilon.
-$$
-
-In other words, the algorithm alternates between row scaling and column scaling until all margins match the specified targets within a predefined tolerance.
+```
+max |CurrentColumnTotal - TargetColumnTotal| < ε
+```
 
 
 
