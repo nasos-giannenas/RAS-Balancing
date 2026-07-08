@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import os
 
 # -------------------------------
 # RAS FUNCTION
@@ -12,6 +13,11 @@ def ras_balance(matrix, target_rows, target_cols, max_iter=500, tol=1e-12, verbo
 
     if abs(r_target.sum() - c_target.sum()) > tol:
         raise ValueError("Row and column totals must match")
+
+    print('   ---   Balancing   ---   ')
+    print('')
+    print('Iteration| Error             | Target Error')
+    print('')
 
     for i in range(max_iter):
         # Row scaling
@@ -42,58 +48,39 @@ def ras_balance(matrix, target_rows, target_cols, max_iter=500, tol=1e-12, verbo
 
 
 # -------------------------------
-# 1. DEFINE 10-SECTOR IO MATRIX
+# 1. READ INPUT FROM EXCEL
 # -------------------------------
-sectors = [
-    "Agriculture", "Mining", "Manufacturing", "Utilities",
-    "Construction", "Trade", "Transport", "Finance",
-    "Public", "Services"
-]
 
-# Realistic-ish IO structure with zeros (structural gaps)
-M = np.array([
-    [120,   0,  80,  0,  40,  60,   0,   0,   0,  50],
-    [  0, 150, 120, 60,  80,   0,   0,   0,   0,  40],
-    [ 60, 200, 300,120, 150, 180, 130, 110,   0, 200],
-    [  0,  50,  90,140,  70,  60, 100,  80,   0, 120],
-    [ 40,  30, 110, 50, 200, 140, 120,   0,   0, 100],
-    [ 20,   0, 150, 40, 100, 180,  90,  60,   0, 130],
-    [  0,   0, 130, 90, 110, 120, 200, 100,   0, 150],
-    [  0,   0,  90, 70,  80,  60, 110, 180,   0, 140],
-    [  0,   0,   0,  0,   0,  50,  40,  60, 150, 200],
-    [ 30,  20, 140,110,  90, 130, 120, 150,   0, 220]
-], dtype=float)
+input_file = "../input/io_input_with_targets.xlsx"
 
-df_initial = pd.DataFrame(M, index=sectors, columns=sectors)
+# IO matrix sheet
+df_initial = pd.read_excel(
+    input_file,
+    sheet_name="IO_Matrix",
+    index_col=0
+)
 
-print("\n=== Initial Matrix ===")
-print(df_initial)
+# Targets sheet
+targets_df = pd.read_excel(
+    input_file,
+    sheet_name="Targets"
+)
 
-print("\nRow sums:", df_initial.sum(axis=1).values)
-print("Column sums:", df_initial.sum(axis=0).values)
+M = df_initial.values
+sectors = df_initial.index.tolist()
 
 
 # -------------------------------
-# 2. CREATE TARGET TOTALS
+# 2. READ TARGET TOTALS
 # -------------------------------
-row_sums = M.sum(axis=1)
-col_sums = M.sum(axis=0)
 
-# Apply macro adjustment (±10–20%)
-np.random.seed(42)
-
-row_growth = np.random.uniform(0.9, 1.2, size=len(row_sums))
-col_growth = np.random.uniform(0.9, 1.2, size=len(col_sums))
-
-target_rows = row_sums * row_growth
-target_cols = col_sums * col_growth
-
-# Scale columns to ensure totals match exactly
-target_cols *= target_rows.sum() / target_cols.sum()
+target_rows = targets_df["TargetRowTotal"].values
+target_cols = targets_df["TargetColTotal"].values
 
 print("\n=== Target Totals ===")
 print("Target row sums:", np.round(target_rows, 2))
 print("Target col sums:", np.round(target_cols, 2))
+print('')
 
 
 # -------------------------------
@@ -102,6 +89,20 @@ print("Target col sums:", np.round(target_cols, 2))
 balanced = ras_balance(M, target_rows, target_cols, verbose=True)
 
 df_balanced = pd.DataFrame(balanced, index=sectors, columns=sectors)
+
+
+# Save balanced matrix
+output_dir = "../output"
+os.makedirs(output_dir, exist_ok=True)
+
+output_file = os.path.join(output_dir, "balanced_output.xlsx")
+
+with pd.ExcelWriter(output_file, engine="openpyxl") as writer:
+    df_balanced.to_excel(
+        writer,
+        sheet_name="Balanced_Matrix"
+    )
+
 
 print("\n=== Balanced Matrix ===")
 print(df_balanced.round(2))
@@ -118,5 +119,10 @@ ratio_after = balanced / balanced.sum()
 
 diff = np.abs(ratio_before - ratio_after).mean()
 
-print("\n=== Structure Preservation ===")
-print(f"Average proportional change: {diff:.6f}")
+# print("\n=== Structure Preservation ===")
+# print(f"Average proportional change: {diff:.6f}")
+
+
+
+print('')
+print(f"\nBalanced matrix written to output/ folder")

@@ -18,7 +18,7 @@ The example uses a **10-sector economic input–output table**, including struct
 
 The script performs the following steps:
 
-1. **Defines an input–output matrix**
+1. **Defines a initial matrix to be balanced**
    - 10 economic sectors (e.g. Agriculture, Manufacturing, Services)
    - Contains inter-sector flows
    - Includes structural zeros (no interaction between some sectors)
